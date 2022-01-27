@@ -1,7 +1,7 @@
 FROM debian:buster
 
 #update packets and install nginx
-RUN apt update && apt install -y nginx
+RUN apt update && apt install -y nginx openssl libssl-dev
 
 #copy configuration to container
 COPY ./nginx-configuration ./etc/nginx/conf.d/default.conf
@@ -15,4 +15,3 @@ RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/n
 
 #start nginx
 ENTRYPOINT ["nginx", "daemon off"]
-
