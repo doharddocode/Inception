@@ -1,0 +1,44 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name oryndoon;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    root /var/www/oryndoon;
+    index index.php index.html;
+    autoindex on;
+
+    server_name oryndoon;
+
+    ssl on;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_certificate /etc/nginx/ssl/oryndoon.pem;
+    ssl_certificate_key /etc/nginx/ssl/oryndoon.key;
+
+    error_log /var/www/oryndoon/logs/error.log;
+    access_log /var/www/oryndoon/logs/access.log;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+    }
+
+    # wordpress
+    location = /favicon.ico { log_not_found off; access_log off; }
+    location = /robots.txt { log_not_found off; access_log off; allow all; }
+    location ~* \.(css|gif|ico|jpeg|jpg|js|png)$ {
+        expires max;
+        log_not_found off;
+    }
+}
