@@ -14,4 +14,4 @@ RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/n
             -keyout /etc/nginx/ssl/oryndoon.key -subj "/C=RU/ST=moscow/L=moscow/O=school21/CN=oryndoon"
 
 #start nginx
-ENTRYPOINT ["nginx", "daemon off"]
+ENTRYPOINT ["nginx", "-g", "daemon off"]
