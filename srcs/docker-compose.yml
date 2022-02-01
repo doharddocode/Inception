@@ -1,18 +1,19 @@
 version: "3.8"
 services:
   nginx:
-    build: requirements/nginx
+    build: requirements/nginx/
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - "~/Desktop/inception/website:/var/www/html"
+    depends_on:
+      - wordpress
     networks:
-      - backend
+      - frontend
     restart: always
 
-  mariadb:
-    build: requirements/mariadb
-    ports:
-      - "1001:1001"
-    networks:
-      - backend
-    restart: always
+networks:
+  frontend:
+  backend:
