@@ -2,27 +2,45 @@ version: "3.8"
 services:
   nginx:
     build: requirements/nginx/
-    container_name: "nginx_container"
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - "~/home/oryndoon/data/website:/var/www/html"
+      - "~/home/oryndoon/data/site:/var/www/html"
+    depends_on:
+      - wordpress
     networks:
-      - inception-net
+      - frontend
     restart: always
 
+  wordpress:
+    build: requirements/wordpress/
+    container_name: wordpress
+    ports:
+      - "9000:9000"
+    volumes:
+      - "~/home/oryndoon/data/site:/var/www/html"
+    depends_on:
+      - mariadb
+    networks:
+      - frontend
+      - backend
+    restart: always
+    env_file: .env
+
   mariadb:
-    build: requirements/mariadb
-    container_name: "mariadb_container"
+    build: requirements/mariadb/
+    container_name: mariadb
     ports:
       - "3306:3306"
     volumes:
       - "~/home/oryndoon/data/mariadb:/var/lib/mysql"
     networks:
-      - inception-net
-    env_file: .env
+      - backend
     restart: always
+    env_file: .env
 
 networks:
-  inception-net:
+  frontend:
+  backend:
