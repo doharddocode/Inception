@@ -16,13 +16,12 @@ RUN	apk update && apk upgrade && apk add php7-bcmath php7-bz2 php7-calendar php7
 #install wp cli
 RUN curl -L https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > wp-cli.phar
 RUN chmod +x wp-cli.phar
-RUN cp wp-cli.phar /usr/bin/wp
+RUN mv wp-cli.phar /usr/bin/wp
 
 #copy pool config
 COPY conf/www.conf /etc/php7/php-fpm.d/www.conf
 #copy php-fpm config
 COPY conf/php-fpm.conf /etc/php7/php-fpm.conf
-
 
 COPY tools/script.sh ./tmp/tools/
 CMD ["sh", "/tmp/tools/script.sh"]
