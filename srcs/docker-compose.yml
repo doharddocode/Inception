@@ -2,25 +2,36 @@ version: "3.8"
 services:
   nginx:
     build: requirements/nginx/
-    container_name: nginx
+    container_name: "nginx"
     ports:
-      - "80:80"
       - "443:443"
     volumes:
-      - "~/home/oryndoon/data/site:/var/www/html"
+      - wordpress-volume:/var/www/html
     depends_on:
       - wordpress
     networks:
       - frontend
     restart: always
 
+  mariadb:
+    build: requirements/mariadb/
+    container_name: "mariadb"
+    ports:
+      - "3306:3306"
+    volumes:
+      - database-volume:/var/lib/mysql
+    networks:
+      - backend
+    restart: always
+    env_file: .env
+
   wordpress:
     build: requirements/wordpress/
-    container_name: wordpress
+    container_name: "wordpress"
     ports:
       - "9000:9000"
     volumes:
-      - "~/home/oryndoon/data/site:/var/www/html"
+      - wordpress-volume:/var/www/html
     depends_on:
       - mariadb
     networks:
@@ -29,18 +40,23 @@ services:
     restart: always
     env_file: .env
 
-  mariadb:
-    build: requirements/mariadb/
-    container_name: mariadb
-    ports:
-      - "3306:3306"
-    volumes:
-      - "~/home/oryndoon/data/mariadb:/var/lib/mysql"
-    networks:
-      - backend
-    restart: always
-    env_file: .env
-
 networks:
   frontend:
   backend:
+
+volumes:
+  wordpress-volume:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/oryndoon/data/wordpress'
+    external: false
+  database-volume:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/oryndoon/data/mariadb'
+    external: false
+
