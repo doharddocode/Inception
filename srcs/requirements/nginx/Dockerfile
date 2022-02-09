@@ -11,9 +11,9 @@ RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/n
 #create directory for logs
 RUN mkdir /var/tmp/logs/
 
-# nginx config
+#nginx config
 RUN mkdir -p /run/nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
 
 #start nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
